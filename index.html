@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>端午充值活动经营汇总 6/6-6/21</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;background:#f0f2f5;color:#333;padding:16px}
+.hd{text-align:center;margin-bottom:20px}
+.hd h1{font-size:22px;color:#1a1a2e;margin-bottom:4px}
+.hd p{font-size:13px;color:#888}
+.summary-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.card{background:#fff;border-radius:10px;padding:16px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.card .label{font-size:12px;color:#888;margin-bottom:4px}
+.card .val{font-size:22px;font-weight:700;color:#1a1a2e}
+.card .sub{font-size:11px;color:#aaa;margin-top:2px}
+.card.c1 .val{color:#e74c3c}
+.card.c2 .val{color:#2980b9}
+.card.c3 .val{color:#27ae60}
+.card.c4 .val{color:#8e44ad}
+#scmWrap{max-height:75vh;overflow:auto;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+table{width:100%;border-collapse:collapse;background:#fff;font-size:13px}
+thead th{position:sticky;top:0;z-index:2;background:#1a1a2e;color:#fff;padding:10px 8px;text-align:right;white-space:nowrap;font-weight:500}
+thead th:first-child{text-align:left;position:sticky;left:0;z-index:3}
+.store-row{cursor:pointer;background:#f8f9fb;font-weight:600;transition:background .15s}
+.store-row:hover{background:#e8ecf1}
+.store-row td{padding:10px 8px;text-align:right;border-bottom:1px solid #e8e8e8}
+.store-row td:first-child{text-align:left;position:sticky;left:0;background:inherit;z-index:1}
+.store-row .arrow{display:inline-block;width:16px;transition:transform .2s;color:#999}
+.store-row.open .arrow{transform:rotate(90deg)}
+.daily-row{display:none;background:#fff}
+.daily-row.show{display:table-row}
+.daily-row td{padding:7px 8px;text-align:right;border-bottom:1px solid #f0f0f0;font-size:12.5px;color:#555}
+.daily-row td:first-child{text-align:left;padding-left:32px;color:#888}
+.daily-row:hover{background:#f5f7fa}
+.num{font-variant-numeric:tabular-nums}
+.neg{color:#e74c3c}
+.pos{color:#27ae60}
+.tag{display:inline-block;font-size:10px;padding:1px 6px;border-radius:8px;margin-left:4px}
+.tag-bulu{background:#fff3cd;color:#856404}
+.tag-gift{background:#e8f5e9;color:#2e7d32}
+.total-row{background:#1a1a2e;color:#fff;font-weight:700}
+.total-row td{padding:10px 8px;text-align:right;border:none}
+.total-row td:first-child{text-align:left;position:sticky;left:0;background:#1a1a2e;z-index:1}
+.btn-all{display:inline-block;margin:12px 0 4px 4px;font-size:12px;color:#2980b9;cursor:pointer;background:none;border:1px solid #2980b9;border-radius:4px;padding:3px 10px}
+.btn-all:hover{background:#2980b9;color:#fff}
+@media(max-width:800px){
+.summary-cards{grid-template-columns:repeat(2,1fr);gap:8px}
+.card{padding:12px 8px}
+.card .val{font-size:18px}
+.card .sub{font-size:10px}
+body{padding:8px}
+.hd h1{font-size:18px}
+.hd p{font-size:12px}
+#scmWrap{max-height:none;border-radius:8px}
+table{font-size:11px}
+thead th{padding:7px 4px;font-size:10px}
+.store-row td,.daily-row td,.total-row td{padding:6px 4px}
+.store-row td:first-child,.daily-row td:first-child{font-size:11px}
+.daily-row td:first-child{padding-left:18px}
+.tag{font-size:9px;padding:0 4px}
+.section{padding:12px;margin-top:16px}
+.section h2{font-size:14px}
+.cmp-table{font-size:11px}
+.cmp-table th,.cmp-table td{padding:6px 4px}
+.cmp-note{font-size:12px;padding:10px 12px;line-height:1.7}
+.rank-wrap{max-height:none}
+.rank-table{font-size:11px}
+.rank-table thead th{padding:6px 4px;font-size:10px}
+.rank-table tbody td{padding:5px 4px}
+.ns-table{font-size:11px}
+.ns-table thead th{font-size:10px;padding:6px 4px}
+.ns-table tbody td{padding:5px 4px}
+.ns-table .ns-note{font-size:10px;max-width:140px}
+.modal-box{width:100%;max-width:100%;border-radius:0;max-height:100vh;padding:16px 12px}
+.tier-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+.tier-card{min-height:90px;padding:10px 8px}
+.tier-card .tc-actual{font-size:20px}
+.tier-card .tc-breakdown{font-size:9px}
+.store-tier-block{padding:8px}
+.store-tier-block .tier-grid{grid-template-columns:1fr 1fr}
+.store-tier-block .tier-card .tc-actual{font-size:18px}
+.btn-all{margin:8px 0 4px 0}
+}
+@media(max-width:480px){
+.summary-cards{grid-template-columns:1fr 1fr;gap:6px}
+.card .val{font-size:16px}
+.card .label{font-size:11px}
+table{font-size:10px}
+thead th{padding:5px 3px;font-size:9px;letter-spacing:-0.3px}
+.store-row td,.daily-row td{padding:5px 3px}
+.tier-grid{grid-template-columns:1fr 1fr;gap:6px}
+.rank-table{font-size:10px}
+.ns-table{font-size:10px}
+.cmp-note{font-size:11px;line-height:1.6}
+}
+.clickable{cursor:pointer;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}
+.clickable:hover{filter:brightness(1.15)}
+/* Modal */
+.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.55);z-index:100;justify-content:center;align-items:center;backdrop-filter:blur(2px)}
+.modal-overlay.open{display:flex}
+.modal-box{background:#fff;border-radius:16px;width:720px;max-width:92vw;max-height:85vh;overflow-y:auto;padding:28px 24px 20px;position:relative;box-shadow:0 12px 40px rgba(0,0,0,.2)}
+.modal-close{position:absolute;top:12px;right:16px;font-size:22px;cursor:pointer;color:#999;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s}
+.modal-close:hover{background:#f0f0f0;color:#333}
+.modal-title{font-size:18px;font-weight:700;color:#1a1a2e;margin-bottom:4px}
+.modal-sub{font-size:12px;color:#888;margin-bottom:18px}
+/* Tier cards */
+.tier-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.tier-card{border-radius:12px;padding:18px 16px;color:#fff;position:relative;overflow:hidden;min-height:120px;display:flex;flex-direction:column;justify-content:space-between}
+.tier-card::before{content:'';position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.1)}
+.tier-card::after{content:'';position:absolute;bottom:-30px;left:-30px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.06)}
+.tc-gold{background:linear-gradient(135deg,#f7971e,#ffd200)}
+.tc-silver{background:linear-gradient(135deg,#667eea,#764ba2)}
+.tc-bronze{background:linear-gradient(135deg,#ee9ca7,#ffdde1);color:#6b3a3a}
+.tc-green{background:linear-gradient(135deg,#11998e,#38ef7d)}
+.tc-dark{background:linear-gradient(135deg,#434343,#000)}
+.tc-blue{background:linear-gradient(135deg,#2193b0,#6dd5ed)}
+.tc-special{background:linear-gradient(135deg,#e74c3c,#c0392b);border:2px dashed rgba(255,255,255,.4)}
+.tier-card .tc-top{position:relative;z-index:1}
+.tier-card .tc-actual{font-size:28px;font-weight:800;line-height:1}
+.tier-card .tc-label{font-size:11px;opacity:.85;margin-top:2px}
+.tier-card .tc-bottom{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-end;margin-top:12px}
+.tier-card .tc-gift{font-size:13px;font-weight:600}
+.tier-card .tc-count{font-size:11px;opacity:.8;background:rgba(255,255,255,.2);padding:2px 8px;border-radius:10px}
+.tier-card .tc-ratio{font-size:10px;opacity:.7;margin-top:4px}
+.tier-card .tc-breakdown{font-size:10.5px;opacity:.85;margin-top:4px;line-height:1.3}
+.tier-card .tc-total{font-size:12px;font-weight:700;margin-top:1px}
+/* Special section */
+.special-section{margin-top:20px;border-top:1px dashed #ddd;padding-top:16px}
+.special-section h4{font-size:13px;color:#e74c3c;margin-bottom:10px}
+.special-item{background:#fff5f5;border:1px solid #fecaca;border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.special-item .si-icon{font-size:24px}
+.special-item .si-info{flex:1}
+.special-item .si-name{font-weight:600;font-size:14px;color:#333}
+.special-item .si-note{font-size:11px;color:#888;margin-top:2px}
+.special-item .si-amt{font-weight:700;color:#e74c3c;font-size:16px}
+.tier-summary{display:flex;gap:16px;margin-bottom:16px;font-size:13px;color:#555}
+.tier-summary span{background:#f8f9fb;padding:4px 12px;border-radius:6px}
+.tier-summary b{color:#1a1a2e}
+/* Section modules */
+.section{margin-top:24px;background:#fff;border-radius:10px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.08);overflow-x:auto}
+.section h2{font-size:16px;color:#1a1a2e;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #e8e8e8}
+/* Comparison table */
+.cmp-table{width:100%;border-collapse:collapse;font-size:13px}
+.cmp-table th{background:#f8f9fb;padding:8px 10px;text-align:center;font-weight:600;color:#555;border-bottom:1px solid #e8e8e8}
+.cmp-table td{padding:8px 10px;text-align:center;border-bottom:1px solid #f0f0f0}
+.cmp-table .cmp-label{text-align:left;font-weight:600;color:#333;background:#fafbfc}
+.cmp-table .up{color:#27ae60;font-weight:600}
+.cmp-table .down{color:#e74c3c;font-weight:600}
+.cmp-note{margin-top:16px;padding:14px 16px;background:#f8f9fb;border-radius:8px;font-size:13px;line-height:1.8;color:#444}
+.cmp-note b{color:#1a1a2e}
+.cmp-note .hl{color:#e74c3c;font-weight:600}
+.cmp-note .hl2{color:#27ae60;font-weight:600}
+/* Insight module */
+.ins-hero{text-align:center;padding:16px 0 12px;margin-bottom:16px;border-bottom:1px solid #e8e8e8}
+.ins-hero .ins-total-label{font-size:12px;color:#888;margin-bottom:2px}
+.ins-hero .ins-total-val{font-size:32px;font-weight:800;color:#1a1a2e}
+.ins-hero .ins-total-sub{font-size:12px;color:#aaa;margin-top:2px}
+.ins-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:18px}
+.ins-card{background:#f8f9fb;border-radius:10px;padding:14px 12px;text-align:center}
+.ins-card .ic-label{font-size:11px;color:#888;margin-bottom:2px}
+.ins-card .ic-val{font-size:20px;font-weight:700;color:#1a1a2e}
+.ins-card .ic-sub{font-size:10px;color:#aaa;margin-top:2px}
+.ins-card.ic-red .ic-val{color:#e74c3c}
+.ins-card.ic-blue .ic-val{color:#2980b9}
+.ins-card.ic-green .ic-val{color:#27ae60}
+.ins-card.ic-purple .ic-val{color:#8e44ad}
+.ins-card.ic-orange .ic-val{color:#e67e22}
+.ins-card.ic-dark .ic-val{color:#34495e}
+.prop-section{margin-bottom:18px}
+.prop-item{margin-bottom:12px}
+.prop-item .prop-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.prop-item .prop-label{font-size:12px;font-weight:600;color:#333}
+.prop-item .prop-vals{font-size:11px;color:#888}
+.prop-bar{height:22px;border-radius:11px;overflow:hidden;display:flex;background:#eee}
+.prop-bar .pb-act{background:linear-gradient(90deg,#667eea,#764ba2);color:#fff;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;min-width:30px;transition:width .5s}
+.prop-bar .pb-pre{background:#e0e0e0;color:#666;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;min-width:30px;transition:width .5s}
+.insight-block{padding:14px 16px;border-radius:10px;margin-bottom:10px;font-size:13px;line-height:1.7;color:#444}
+.insight-block h3{font-size:14px;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.insight-block h3 .ib-dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0}
+.ib-recharge{background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border-left:4px solid #27ae60}
+.ib-recharge h3{color:#1b5e20}
+.ib-discount{background:linear-gradient(135deg,#fff3e0,#fce4ec);border-left:4px solid #e67e22}
+.ib-discount h3{color:#e65100}
+.ib-revenue{background:linear-gradient(135deg,#e3f2fd,#e8eaf6);border-left:4px solid #2980b9}
+.ib-revenue h3{color:#1565c0}
+.ib-footnote{font-size:11px;color:#999;padding:8px 0;margin-top:6px;border-top:1px dashed #e0e0e0}
+/* Store contribution */
+.store-section{margin:18px 0}
+.store-section h3{font-size:13px;color:#555;margin-bottom:10px;font-weight:600}
+.store-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.store-card{background:#f8f9fb;border-radius:10px;padding:12px 10px;text-align:center;border:1px solid #e8e8e8;position:relative;overflow:hidden}
+.store-card .sc-name{font-size:12px;font-weight:700;color:#1a1a2e;margin-bottom:6px}
+.store-card .sc-rev{font-size:16px;font-weight:800;color:#e74c3c}
+.store-card .sc-ord{font-size:11px;color:#888;margin-top:2px}
+.store-card .sc-rch{font-size:11px;color:#27ae60;margin-top:4px;font-weight:600}
+.store-card .sc-pct{position:absolute;top:4px;right:6px;font-size:10px;font-weight:700;color:#667eea}
+.store-bar{height:28px;border-radius:14px;overflow:hidden;display:flex;background:#eee}
+.store-bar div{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff;min-width:20px;white-space:nowrap;overflow:hidden}
+.sb-s1{background:linear-gradient(135deg,#e74c3c,#c0392b)}
+.sb-s2{background:linear-gradient(135deg,#2980b9,#3498db)}
+.sb-s3{background:linear-gradient(135deg,#27ae60,#2ecc71)}
+.sb-s4{background:linear-gradient(135deg,#8e44ad,#9b59b6)}
+@media(max-width:800px){
+.ins-grid{grid-template-columns:1fr 1fr;gap:6px}
+.ins-card .ic-val{font-size:16px}
+.ins-hero .ins-total-val{font-size:26px}
+.insight-block{padding:10px 12px;font-size:12px;line-height:1.6}
+.store-grid{grid-template-columns:1fr 1fr;gap:6px}
+.store-card .sc-rev{font-size:14px}
+.store-bar div{font-size:9px}
+}
+/* Ranking table */
+.rank-wrap{overflow:visible;border-radius:8px;border:1px solid #e8e8e8}
+.rank-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.rank-table thead th{position:sticky;top:0;z-index:2;background:#1a1a2e;color:#fff;padding:8px 6px;text-align:center;font-weight:500;white-space:nowrap}
+.rank-table thead th:first-child{width:36px}
+.rank-table tbody td{padding:6px;text-align:center;border-bottom:1px solid #f0f0f0}
+.rank-table tbody tr:hover{background:#f5f7fa}
+.rank-table .rk{font-weight:700;color:#1a1a2e}
+.rank-table .rk1{color:#e74c3c;font-size:15px}
+.rank-table .rk2{color:#e67e22;font-size:14px}
+.rank-table .rk3{color:#f39c12;font-size:14px}
+.rank-table .rname{text-align:left;padding-left:10px;font-weight:500}
+.rank-table .ramt{font-weight:600;color:#1a1a2e;font-variant-numeric:tabular-nums}
+/* Inline tier section */
+.store-tier-block{margin-bottom:16px;padding:12px;background:#f8f9fb;border-radius:8px}
+.store-tier-block h3{font-size:14px;color:#1a1a2e;margin-bottom:8px}
+.store-tier-block .tier-grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
+.store-tier-block .tier-card{min-height:100px;padding:12px 10px}
+.store-tier-block .tier-card .tc-actual{font-size:22px}
+.store-tier-block .tier-card .tc-breakdown{font-size:9.5px}
+.store-tier-block .tier-card .tc-total{font-size:11px}
+/* Non-standard table */
+.ns-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.ns-table thead th{background:#1a1a2e;color:#fff;padding:8px 6px;text-align:center;font-weight:500;white-space:nowrap;position:sticky;top:0;z-index:2}
+.ns-table tbody td{padding:7px 6px;text-align:center;border-bottom:1px solid #f0f0f0}
+.ns-table tbody tr:hover{background:#f5f7fa}
+.ns-table .ns-name{text-align:left;padding-left:10px;font-weight:500}
+.ns-table .ns-note{font-size:11px;color:#888;max-width:200px;text-align:left}
+.ns-up{color:#e74c3c;font-weight:600}
+.ns-down{color:#2980b9;font-weight:600}
+.ns-eq{color:#888}
+.ns-warn{background:#fff8e1}
+.ns-table .ramt{font-weight:600;color:#1a1a2e;font-variant-numeric:tabular-nums}
+.ns-store-tag{display:inline-block;font-size:10px;padding:1px 6px;border-radius:8px;background:#e8ecf1;color:#555}
+</style>
+</head>
+<body>
+<div class="hd">
+<h1>端午充值活动经营汇总</h1>
+<p>2026年6月6日 - 6月21日 (16天)</p>
+</div>
+
+<div class="summary-cards">
+<div class="card c1"><div class="label">营业总收入</div><div class="val" id="c-rev">-</div><div class="sub" id="c-revsub"></div></div>
+<div class="card c2"><div class="label">订单总笔数</div><div class="val" id="c-ord">-</div><div class="sub" id="c-ordsub"></div></div>
+<div class="card c3"><div class="label">会员充值(本金)</div><div class="val" id="c-rch">-</div><div class="sub" id="c-rchsub"></div></div>
+<div class="card c4"><div class="label">优惠总金额</div><div class="val" id="c-disc">-</div><div class="sub" id="c-discsub"></div></div>
+</div>
+
+<button class="btn-all" onclick="toggleAll()">全部展开 / 折叠</button>
+
+<div id="scmWrap">
+<table>
+<thead>
+<tr>
+<th>门店 / 日期</th>
+<th>订单笔数</th>
+<th>营业总额</th>
+<th>优惠金额</th>
+<th>订单收入</th>
+<th>充值笔数</th>
+<th>实储金额</th>
+<th>赠储金额</th>
+<th>充值总额</th>
+<th>补录 / 赠币</th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+
+<script>
+var DATA = {"stores": {"省府店": {"name": "省府店", "order_count": 1189, "order_amount": 513014.6, "discount": -31885.0, "revenue": 481129.6, "recharge_count": 160, "recharge_actual": 353879.0, "recharge_gift": 143136.0, "recharge_total": 497015.0, "bulu_count": 0, "bulu_amount": 0, "daily": [{"date": "2026-06-06", "date_short": "06/06", "weekday": "六", "order_count": 91, "order_amount": 37879.0, "discount": -2573.83, "revenue": 35305.17, "recharge_count": 21, "recharge_actual": 39000.0, "recharge_gift": 14872.0, "recharge_total": 53872.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-07", "date_short": "06/07", "weekday": "日", "order_count": 88, "order_amount": 32843.0, "discount": -1368.02, "revenue": 31474.98, "recharge_count": 17, "recharge_actual": 41000.0, "recharge_gift": 16596.0, "recharge_total": 57596.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-08", "date_short": "06/08", "weekday": "一", "order_count": 60, "order_amount": 24732.2, "discount": -882.14, "revenue": 23850.06, "recharge_count": 7, "recharge_actual": 22000.0, "recharge_gift": 9616.0, "recharge_total": 31616.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-09", "date_short": "06/09", "weekday": "二", "order_count": 53, "order_amount": 23293.0, "discount": -305.82, "revenue": 22987.18, "recharge_count": 7, "recharge_actual": 18000.0, "recharge_gift": 7316.0, "recharge_total": 25316.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-10", "date_short": "06/10", "weekday": "三", "order_count": 70, "order_amount": 30250.0, "discount": -1757.73, "revenue": 28492.27, "recharge_count": 4, "recharge_actual": 6000.0, "recharge_gift": 2152.0, "recharge_total": 8152.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-11", "date_short": "06/11", "weekday": "四", "order_count": 76, "order_amount": 33609.6, "discount": -1867.38, "revenue": 31742.22, "recharge_count": 17, "recharge_actual": 38622.0, "recharge_gift": 15108.0, "recharge_total": 53730.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-12", "date_short": "06/12", "weekday": "五", "order_count": 74, "order_amount": 34307.0, "discount": -980.31, "revenue": 33326.69, "recharge_count": 12, "recharge_actual": 20080.0, "recharge_gift": 7568.0, "recharge_total": 27648.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-13", "date_short": "06/13", "weekday": "六", "order_count": 65, "order_amount": 27429.6, "discount": -1672.65, "revenue": 25756.95, "recharge_count": 9, "recharge_actual": 19000.0, "recharge_gift": 7392.0, "recharge_total": 26392.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-14", "date_short": "06/14", "weekday": "日", "order_count": 83, "order_amount": 41114.4, "discount": -2625.32, "revenue": 38489.08, "recharge_count": 7, "recharge_actual": 11000.0, "recharge_gift": 4752.0, "recharge_total": 15752.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-15", "date_short": "06/15", "weekday": "一", "order_count": 58, "order_amount": 23371.2, "discount": -1181.57, "revenue": 22189.63, "recharge_count": 5, "recharge_actual": 16000.0, "recharge_gift": 6640.0, "recharge_total": 22640.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-16", "date_short": "06/16", "weekday": "二", "order_count": 75, "order_amount": 28219.0, "discount": -2120.5, "revenue": 26098.5, "recharge_count": 5, "recharge_actual": 8499.0, "recharge_gift": 3052.0, "recharge_total": 11551.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-17", "date_short": "06/17", "weekday": "三", "order_count": 78, "order_amount": 30541.0, "discount": -1858.33, "revenue": 28682.67, "recharge_count": 7, "recharge_actual": 15678.0, "recharge_gift": 7152.0, "recharge_total": 22830.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-18", "date_short": "06/18", "weekday": "四", "order_count": 58, "order_amount": 23536.8, "discount": -1383.81, "revenue": 22152.99, "recharge_count": 6, "recharge_actual": 17000.0, "recharge_gift": 7228.0, "recharge_total": 24228.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-19", "date_short": "06/19", "weekday": "五", "order_count": 104, "order_amount": 51054.8, "discount": -5493.31, "revenue": 45561.49, "recharge_count": 19, "recharge_actual": 41000.0, "recharge_gift": 16796.0, "recharge_total": 57796.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-20", "date_short": "06/20", "weekday": "六", "order_count": 68, "order_amount": 33488.0, "discount": -2717.1, "revenue": 30770.9, "recharge_count": 8, "recharge_actual": 13000.0, "recharge_gift": 4804.0, "recharge_total": 17804.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-21", "date_short": "06/21", "weekday": "日", "order_count": 88, "order_amount": 37346.0, "discount": -3097.18, "revenue": 34248.82, "recharge_count": 9, "recharge_actual": 28000.0, "recharge_gift": 12092.0, "recharge_total": 40092.0, "bulu_count": 0, "bulu_amount": 0}]}, "市府店": {"name": "市府店", "order_count": 1012, "order_amount": 390319.8, "discount": -24912.39, "revenue": 365407.41, "recharge_count": 86, "recharge_actual": 217052.0, "recharge_gift": 89940.0, "recharge_total": 306992.0, "bulu_count": 1, "bulu_amount": 1400.0, "daily": [{"date": "2026-06-06", "date_short": "06/06", "weekday": "六", "order_count": 80, "order_amount": 27386.4, "discount": -538.15, "revenue": 26848.25, "recharge_count": 8, "recharge_actual": 13000.0, "recharge_gift": 4604.0, "recharge_total": 17604.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-07", "date_short": "06/07", "weekday": "日", "order_count": 69, "order_amount": 22727.6, "discount": -1090.66, "revenue": 21636.94, "recharge_count": 3, "recharge_actual": 6000.0, "recharge_gift": 2264.0, "recharge_total": 8264.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-08", "date_short": "06/08", "weekday": "一", "order_count": 36, "order_amount": 13119.0, "discount": -761.61, "revenue": 12357.39, "recharge_count": 5, "recharge_actual": 16022.0, "recharge_gift": 6840.0, "recharge_total": 22862.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-09", "date_short": "06/09", "weekday": "二", "order_count": 56, "order_amount": 21486.6, "discount": -645.03, "revenue": 20841.57, "recharge_count": 9, "recharge_actual": 18135.0, "recharge_gift": 7616.0, "recharge_total": 25751.0, "bulu_count": 1, "bulu_amount": 1400.0}, {"date": "2026-06-10", "date_short": "06/10", "weekday": "三", "order_count": 49, "order_amount": 20426.0, "discount": -1482.23, "revenue": 18943.77, "recharge_count": 2, "recharge_actual": 3000.0, "recharge_gift": 1076.0, "recharge_total": 4076.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-11", "date_short": "06/11", "weekday": "四", "order_count": 52, "order_amount": 20930.4, "discount": -1070.55, "revenue": 19859.85, "recharge_count": 6, "recharge_actual": 24000.0, "recharge_gift": 10428.0, "recharge_total": 34428.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-12", "date_short": "06/12", "weekday": "五", "order_count": 63, "order_amount": 26207.8, "discount": -4666.34, "revenue": 21541.46, "recharge_count": 10, "recharge_actual": 24000.0, "recharge_gift": 9780.0, "recharge_total": 33780.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-13", "date_short": "06/13", "weekday": "六", "order_count": 60, "order_amount": 30059.2, "discount": -1891.1, "revenue": 28168.1, "recharge_count": 11, "recharge_actual": 41000.0, "recharge_gift": 18904.0, "recharge_total": 59904.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-14", "date_short": "06/14", "weekday": "日", "order_count": 76, "order_amount": 31873.2, "discount": -2353.28, "revenue": 29519.92, "recharge_count": 3, "recharge_actual": 6000.0, "recharge_gift": 2364.0, "recharge_total": 8364.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-15", "date_short": "06/15", "weekday": "一", "order_count": 64, "order_amount": 22575.8, "discount": -1184.91, "revenue": 21390.89, "recharge_count": 3, "recharge_actual": 4000.0, "recharge_gift": 1364.0, "recharge_total": 5364.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-16", "date_short": "06/16", "weekday": "二", "order_count": 70, "order_amount": 24229.6, "discount": -1464.15, "revenue": 22765.45, "recharge_count": 6, "recharge_actual": 12895.0, "recharge_gift": 4840.0, "recharge_total": 17735.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-17", "date_short": "06/17", "weekday": "三", "order_count": 49, "order_amount": 15918.4, "discount": -843.23, "revenue": 15075.17, "recharge_count": 3, "recharge_actual": 8000.0, "recharge_gift": 3164.0, "recharge_total": 11164.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-18", "date_short": "06/18", "weekday": "四", "order_count": 62, "order_amount": 17364.8, "discount": -792.28, "revenue": 16572.52, "recharge_count": 7, "recharge_actual": 21000.0, "recharge_gift": 9116.0, "recharge_total": 30116.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-19", "date_short": "06/19", "weekday": "五", "order_count": 90, "order_amount": 43102.0, "discount": -3550.57, "revenue": 39551.43, "recharge_count": 5, "recharge_actual": 9000.0, "recharge_gift": 3340.0, "recharge_total": 12340.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-20", "date_short": "06/20", "weekday": "六", "order_count": 67, "order_amount": 27973.0, "discount": -1769.36, "revenue": 26203.64, "recharge_count": 3, "recharge_actual": 7000.0, "recharge_gift": 2764.0, "recharge_total": 9764.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-21", "date_short": "06/21", "weekday": "日", "order_count": 69, "order_amount": 24940.0, "discount": -808.94, "revenue": 24131.06, "recharge_count": 2, "recharge_actual": 4000.0, "recharge_gift": 1476.0, "recharge_total": 5476.0, "bulu_count": 0, "bulu_amount": 0}]}, "农大店": {"name": "农大店", "order_count": 507, "order_amount": 141294.06, "discount": -16048.34, "revenue": 125245.72, "recharge_count": 38, "recharge_actual": 77000.0, "recharge_gift": 30268.0, "recharge_total": 107268.0, "bulu_count": 0, "bulu_amount": 0, "daily": [{"date": "2026-06-06", "date_short": "06/06", "weekday": "六", "order_count": 38, "order_amount": 9663.0, "discount": -359.64, "revenue": 9303.36, "recharge_count": 3, "recharge_actual": 7000.0, "recharge_gift": 2764.0, "recharge_total": 9764.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-07", "date_short": "06/07", "weekday": "日", "order_count": 28, "order_amount": 5307.0, "discount": -544.78, "revenue": 4762.22, "recharge_count": 2, "recharge_actual": 4000.0, "recharge_gift": 1576.0, "recharge_total": 5576.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-08", "date_short": "06/08", "weekday": "一", "order_count": 19, "order_amount": 3883.0, "discount": -135.0, "revenue": 3748.0, "recharge_count": 0, "recharge_actual": 0, "recharge_gift": 0, "recharge_total": 0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-09", "date_short": "06/09", "weekday": "二", "order_count": 27, "order_amount": 8745.0, "discount": -679.77, "revenue": 8065.23, "recharge_count": 2, "recharge_actual": 7000.0, "recharge_gift": 3076.0, "recharge_total": 10076.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-10", "date_short": "06/10", "weekday": "三", "order_count": 34, "order_amount": 9732.4, "discount": -2256.23, "revenue": 7476.17, "recharge_count": 0, "recharge_actual": 0, "recharge_gift": 0, "recharge_total": 0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-11", "date_short": "06/11", "weekday": "四", "order_count": 24, "order_amount": 6577.0, "discount": -342.89, "revenue": 6234.11, "recharge_count": 3, "recharge_actual": 3000.0, "recharge_gift": 864.0, "recharge_total": 3864.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-12", "date_short": "06/12", "weekday": "五", "order_count": 26, "order_amount": 7500.48, "discount": -238.65, "revenue": 7261.83, "recharge_count": 5, "recharge_actual": 12000.0, "recharge_gift": 4940.0, "recharge_total": 16940.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-13", "date_short": "06/13", "weekday": "六", "order_count": 32, "order_amount": 10113.0, "discount": -1259.27, "revenue": 8853.73, "recharge_count": 1, "recharge_actual": 5000.0, "recharge_gift": 2288.0, "recharge_total": 7288.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-14", "date_short": "06/14", "weekday": "日", "order_count": 35, "order_amount": 9828.0, "discount": -1007.29, "revenue": 8820.71, "recharge_count": 3, "recharge_actual": 5000.0, "recharge_gift": 1764.0, "recharge_total": 6764.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-15", "date_short": "06/15", "weekday": "一", "order_count": 42, "order_amount": 10324.6, "discount": -1640.14, "revenue": 8684.46, "recharge_count": 2, "recharge_actual": 3000.0, "recharge_gift": 1076.0, "recharge_total": 4076.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-16", "date_short": "06/16", "weekday": "二", "order_count": 32, "order_amount": 7047.0, "discount": -456.88, "revenue": 6590.12, "recharge_count": 2, "recharge_actual": 2000.0, "recharge_gift": 576.0, "recharge_total": 2576.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-17", "date_short": "06/17", "weekday": "三", "order_count": 33, "order_amount": 9144.2, "discount": -406.73, "revenue": 8737.47, "recharge_count": 8, "recharge_actual": 13000.0, "recharge_gift": 4928.0, "recharge_total": 17928.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-18", "date_short": "06/18", "weekday": "四", "order_count": 47, "order_amount": 8849.36, "discount": -996.48, "revenue": 7852.88, "recharge_count": 2, "recharge_actual": 4000.0, "recharge_gift": 1576.0, "recharge_total": 5576.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-19", "date_short": "06/19", "weekday": "五", "order_count": 44, "order_amount": 20631.8, "discount": -3785.13, "revenue": 16846.67, "recharge_count": 2, "recharge_actual": 2000.0, "recharge_gift": 576.0, "recharge_total": 2576.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-20", "date_short": "06/20", "weekday": "六", "order_count": 25, "order_amount": 10076.36, "discount": -1651.89, "revenue": 8424.47, "recharge_count": 1, "recharge_actual": 3000.0, "recharge_gift": 1188.0, "recharge_total": 4188.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-21", "date_short": "06/21", "weekday": "日", "order_count": 21, "order_amount": 3871.86, "discount": -287.57, "revenue": 3584.29, "recharge_count": 2, "recharge_actual": 7000.0, "recharge_gift": 3076.0, "recharge_total": 10076.0, "bulu_count": 0, "bulu_amount": 0}]}, "含浦店": {"name": "含浦店", "order_count": 480, "order_amount": 148848.3, "discount": -6513.47, "revenue": 142334.83, "recharge_count": 47, "recharge_actual": 79000.01, "recharge_gift": 30296.0, "recharge_total": 109296.01, "bulu_count": 0, "bulu_amount": 0, "daily": [{"date": "2026-06-06", "date_short": "06/06", "weekday": "六", "order_count": 27, "order_amount": 9480.0, "discount": -399.23, "revenue": 9080.77, "recharge_count": 8, "recharge_actual": 17000.0, "recharge_gift": 6504.0, "recharge_total": 23504.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-07", "date_short": "06/07", "weekday": "日", "order_count": 26, "order_amount": 6881.0, "discount": -127.4, "revenue": 6753.6, "recharge_count": 4, "recharge_actual": 6000.0, "recharge_gift": 2152.0, "recharge_total": 8152.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-08", "date_short": "06/08", "weekday": "一", "order_count": 26, "order_amount": 7919.0, "discount": -210.87, "revenue": 7708.13, "recharge_count": 2, "recharge_actual": 3000.0, "recharge_gift": 1076.0, "recharge_total": 4076.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-09", "date_short": "06/09", "weekday": "二", "order_count": 21, "order_amount": 6032.0, "discount": -152.22, "revenue": 5879.78, "recharge_count": 2, "recharge_actual": 1000.01, "recharge_gift": 788.0, "recharge_total": 1788.01, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-10", "date_short": "06/10", "weekday": "三", "order_count": 31, "order_amount": 10124.0, "discount": -947.76, "revenue": 9176.24, "recharge_count": 3, "recharge_actual": 2000.0, "recharge_gift": 788.0, "recharge_total": 2788.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-11", "date_short": "06/11", "weekday": "四", "order_count": 25, "order_amount": 8917.0, "discount": -274.45, "revenue": 8642.55, "recharge_count": 2, "recharge_actual": 4000.0, "recharge_gift": 1476.0, "recharge_total": 5476.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-12", "date_short": "06/12", "weekday": "五", "order_count": 31, "order_amount": 8570.5, "discount": -175.93, "revenue": 8394.57, "recharge_count": 1, "recharge_actual": 1000.0, "recharge_gift": 288.0, "recharge_total": 1288.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-13", "date_short": "06/13", "weekday": "六", "order_count": 23, "order_amount": 7135.0, "discount": -263.05, "revenue": 6871.95, "recharge_count": 5, "recharge_actual": 6000.0, "recharge_gift": 1940.0, "recharge_total": 7940.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-14", "date_short": "06/14", "weekday": "日", "order_count": 30, "order_amount": 7450.0, "discount": -214.54, "revenue": 7235.46, "recharge_count": 1, "recharge_actual": 1000.0, "recharge_gift": 288.0, "recharge_total": 1288.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-15", "date_short": "06/15", "weekday": "一", "order_count": 22, "order_amount": 6623.0, "discount": -100.0, "revenue": 6523.0, "recharge_count": 1, "recharge_actual": 2000.0, "recharge_gift": 788.0, "recharge_total": 2788.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-16", "date_short": "06/16", "weekday": "二", "order_count": 39, "order_amount": 11437.0, "discount": -470.46, "revenue": 10966.54, "recharge_count": 5, "recharge_actual": 13000.0, "recharge_gift": 5340.0, "recharge_total": 18340.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-17", "date_short": "06/17", "weekday": "三", "order_count": 34, "order_amount": 8891.0, "discount": -367.36, "revenue": 8523.64, "recharge_count": 3, "recharge_actual": 5000.0, "recharge_gift": 1764.0, "recharge_total": 6764.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-18", "date_short": "06/18", "weekday": "四", "order_count": 30, "order_amount": 7934.0, "discount": -222.47, "revenue": 7711.53, "recharge_count": 4, "recharge_actual": 11000.0, "recharge_gift": 4552.0, "recharge_total": 15552.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-19", "date_short": "06/19", "weekday": "五", "order_count": 53, "order_amount": 22030.4, "discount": -1786.9, "revenue": 20243.5, "recharge_count": 6, "recharge_actual": 7000.0, "recharge_gift": 2552.0, "recharge_total": 9552.0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-20", "date_short": "06/20", "weekday": "六", "order_count": 31, "order_amount": 10515.4, "discount": -481.53, "revenue": 10033.87, "recharge_count": 0, "recharge_actual": 0, "recharge_gift": 0, "recharge_total": 0, "bulu_count": 0, "bulu_amount": 0}, {"date": "2026-06-21", "date_short": "06/21", "weekday": "日", "order_count": 31, "order_amount": 8909.0, "discount": -319.3, "revenue": 8589.7, "recharge_count": 0, "recharge_actual": 0, "recharge_gift": 0, "recharge_total": 0, "bulu_count": 0, "bulu_amount": 0}]}}, "total": {"order_count": 3188, "order_amount": 1193476.76, "discount": -79359.2, "revenue": 1114117.56, "recharge_count": 331, "recharge_actual": 726931.01, "recharge_gift": 293640.0, "recharge_total": 1020571.01}};
+
+function fmt(n){if(n===0)return'<span style="color:#ccc">-</span>';return n.toLocaleString('zh-CN',{minimumFractionDigits:0,maximumFractionDigits:0})}
+function fmtN(n){if(n===0)return'<span style="color:#ccc">-</span>';var s=n<0?'neg':'';return'<span class="'+s+' num">'+n.toLocaleString('zh-CN',{minimumFractionDigits:0,maximumFractionDigits:0})+'</span>'}
+
+// Cards
+var t=DATA.total;
+document.getElementById('c-rev').textContent='¥'+(t.revenue/10000).toFixed(1)+'万';
+document.getElementById('c-revsub').textContent=t.order_count+'笔 / 日均'+(t.order_count/16).toFixed(0)+'笔';
+document.getElementById('c-ord').textContent=t.order_count.toLocaleString();
+document.getElementById('c-ordsub').textContent='日均'+Math.round(t.order_count/16)+'笔 / 日均¥'+Math.round(t.revenue/16).toLocaleString();
+document.getElementById('c-rch').textContent='¥'+(t.recharge_actual/10000).toFixed(1)+'万';
+document.getElementById('c-rchsub').textContent='赠储¥'+(t.recharge_gift/10000).toFixed(1)+'万 / 合计¥'+(t.recharge_total/10000).toFixed(1)+'万';
+document.getElementById('c-disc').textContent='¥'+Math.abs(t.discount/10000).toFixed(1)+'万';
+document.getElementById('c-discsub').textContent='占营业额'+Math.abs(t.discount/t.order_amount*100).toFixed(1)+'%';
+
+// Table
+var tb=document.getElementById('tbody');
+var allOpen=false;
+var storeKeys=['省府店','市府店','农大店','含浦店'];
+
+storeKeys.forEach(function(sk){
+  var s=DATA.stores[sk];
+  var sid='store_'+sk;
+  var tags='';
+  if(s.bulu_count>0) tags+='<span class="tag tag-bulu">补录'+s.bulu_count+'笔 ¥'+fmt(s.bulu_amount)+'</span>';
+  if(sk==='含浦店') tags+='<span class="tag tag-gift">赠币1笔 ¥500</span>';
+  if(!tags) tags='<span style="color:#ccc">-</span>';
+  var html='<tr class="store-row" onclick="toggleStore(\''+sid+'\')" id="row_'+sid+'">'
+    +'<td><span class="arrow">&#9654;</span> '+s.name+'</td>'
+    +'<td class="num">'+s.order_count+'</td>'
+    +'<td class="num">'+fmt(s.order_amount)+'</td>'
+    +'<td class="num neg">'+fmt(Math.abs(s.discount))+'</td>'
+    +'<td class="num" style="font-weight:700;color:#1a1a2e">'+fmt(s.revenue)+'</td>'
+    +'<td class="num">'+s.recharge_count+'</td>'
+    +'<td class="num">'+fmt(s.recharge_actual)+'</td>'
+    +'<td class="num">'+fmt(s.recharge_gift)+'</td>'
+    +'<td class="num pos clickable" style="font-weight:600" onclick="openTierModal(\''+sk+'\')">'+fmt(s.recharge_total)+'</td>'
+    +'<td>'+tags+'</td>'
+    +'</tr>';
+  s.daily.forEach(function(d){
+    var dtags='';
+    if(d.bulu_count>0) dtags+='<span class="tag tag-bulu">补录'+d.bulu_count+'笔 ¥'+fmt(d.bulu_amount)+'</span>';
+    if(sk==='含浦店'&&d.date_short==='06/09') dtags+='<span class="tag tag-gift">赠币1笔 ¥500</span>';
+    if(!dtags) dtags='<span style="color:#ccc">-</span>';
+    html+='<tr class="daily-row" data-store="'+sid+'">'
+      +'<td>'+d.date_short+' '+d.weekday+'</td>'
+      +'<td class="num">'+d.order_count+'</td>'
+      +'<td class="num">'+fmt(d.order_amount)+'</td>'
+      +'<td class="num neg">'+(d.discount<0?fmt(Math.abs(d.discount)):'<span style="color:#ccc">-</span>')+'</td>'
+      +'<td class="num">'+fmt(d.revenue)+'</td>'
+      +'<td class="num">'+(d.recharge_count||'<span style="color:#ccc">-</span>')+'</td>'
+      +'<td class="num">'+fmt(d.recharge_actual)+'</td>'
+      +'<td class="num">'+fmt(d.recharge_gift)+'</td>'
+      +'<td class="num">'+fmt(d.recharge_total)+'</td>'
+      +'<td>'+dtags+'</td>'
+      +'</tr>';
+  });
+  tb.insertAdjacentHTML('beforeend',html);
+});
+
+// Total row
+var buluTotal=0,buluAmt=0;
+storeKeys.forEach(function(sk){buluTotal+=DATA.stores[sk].bulu_count;buluAmt+=DATA.stores[sk].bulu_amount});
+var totalTags='';
+if(buluTotal>0) totalTags+='<span class="tag tag-bulu">补录'+buluTotal+'笔 ¥'+fmt(buluAmt)+'</span>';
+totalTags+='<span class="tag tag-gift">赠币1笔 ¥500</span>';
+tb.insertAdjacentHTML('beforeend',
+  '<tr class="total-row"><td>合 计</td>'
+  +'<td class="num">'+t.order_count+'</td>'
+  +'<td class="num">'+fmt(t.order_amount)+'</td>'
+  +'<td class="num">'+fmt(Math.abs(t.discount))+'</td>'
+  +'<td class="num">'+fmt(t.revenue)+'</td>'
+  +'<td class="num">'+t.recharge_count+'</td>'
+  +'<td class="num">'+fmt(t.recharge_actual)+'</td>'
+  +'<td class="num">'+fmt(t.recharge_gift)+'</td>'
+  +'<td class="num">'+fmt(t.recharge_total)+'</td>'
+  +'<td>'+totalTags+'</td></tr>');
+
+function toggleStore(sid){
+  var row=document.getElementById('row_'+sid);
+  var rows=document.querySelectorAll('tr[data-store="'+sid+'"]');
+  var isOpen=row.classList.contains('open');
+  if(isOpen){row.classList.remove('open');rows.forEach(function(r){r.classList.remove('show')})}
+  else{row.classList.add('open');rows.forEach(function(r){r.classList.add('show')})}
+}
+function toggleAll(){
+  allOpen=!allOpen;
+  storeKeys.forEach(function(sk){
+    var sid='store_'+sk;
+    var row=document.getElementById('row_'+sid);
+    var rows=document.querySelectorAll('tr[data-store="'+sid+'"]');
+    if(allOpen){row.classList.add('open');rows.forEach(function(r){r.classList.add('show')})}
+    else{row.classList.remove('open');rows.forEach(function(r){r.classList.remove('show')})}
+  });
+}
+
+// Tier data
+var TIERS = {"省府店":[{a:10000.0,g:4888,r:48.9,n:3,at:30000.0,gt:14664.0,t:44664.0},{a:8700.0,g:3038,r:34.9,n:2,at:17400.0,gt:6076.0,t:23476.0},{a:5000.0,g:2309,r:46.2,n:15,at:75000.0,gt:34632.0,t:109632.0},{a:3000.0,g:1188,r:39.6,n:28,at:84000.0,gt:33264.0,t:117264.0},{a:2000.0,g:788,r:39.4,n:54,at:108000.0,gt:42552.0,t:150552.0},{a:1680.0,g:788,r:46.9,n:1,at:1680.0,gt:788.0,t:2468.0},{a:1000.0,g:288,r:28.8,n:49,at:49000.0,gt:14112.0,t:63112.0},{a:978.0,g:0,r:0.0,n:1,at:978.0,gt:0.0,t:978.0},{a:622.0,g:0,r:0.0,n:1,at:622.0,gt:0.0,t:622.0},{a:499.0,g:0,r:0.0,n:1,at:499.0,gt:0.0,t:499.0},{a:400.0,g:0,r:0.0,n:1,at:400.0,gt:0.0,t:400.0}],"市府店":[{a:10000.0,g:4888,r:48.9,n:6,at:60000.0,gt:29328.0,t:89328.0},{a:5000.0,g:2288,r:45.8,n:7,at:35000.0,gt:16016.0,t:51016.0},{a:3000.0,g:1195,r:39.8,n:16,at:48000.0,gt:19120.0,t:67120.0},{a:2000.0,g:788,r:39.4,n:21,at:42000.0,gt:16548.0,t:58548.0},{a:1135.0,g:288,r:25.4,n:1,at:1135.0,gt:288.0,t:1423.0},{a:1022.0,g:288,r:28.2,n:1,at:1022.0,gt:288.0,t:1310.0},{a:1000.0,g:282,r:28.2,n:31,at:31000.0,gt:8728.0,t:39728.0},{a:895.0,g:0,r:0.0,n:1,at:895.0,gt:0.0,t:895.0}],"农大店":[{a:5000.0,g:2288,r:45.8,n:4,at:20000.0,gt:9152.0,t:29152.0},{a:3000.0,g:1188,r:39.6,n:6,at:18000.0,gt:7128.0,t:25128.0},{a:2000.0,g:788,r:39.4,n:14,at:28000.0,gt:11032.0,t:39032.0},{a:1000.0,g:288,r:28.8,n:13,at:13000.0,gt:3744.0,t:16744.0}],"含浦店":[{a:5000.0,g:2288,r:45.8,n:2,at:10000.0,gt:4576.0,t:14576.0},{a:3000.0,g:1188,r:39.6,n:8,at:24000.0,gt:9504.0,t:33504.0},{a:2000.0,g:788,r:39.4,n:13,at:26000.0,gt:10244.0,t:36244.0},{a:1000.0,g:288,r:28.8,n:21,at:21000.0,gt:6048.0,t:27048.0},{a:0.01,g:500,r:0,n:1,at:0.01,gt:500.0,t:500.01,special:true}]};
+var SPECIALS = {
+"市府店":[{type:"补录",name:"蔡女士",actual:0,gift:1400,note:"端午赠金补录 + 擂茶套餐",date:"06/09"}],
+"含浦店":[{type:"后台赠币",name:"覃总",actual:0.01,gift:500,note:"纯赠币操作，0.01实储仅为过系统，500已计入充值赠储",date:"06/09"}]
+};
+
+function openTierModal(storeKey){
+  event.stopPropagation();
+  var tiers=TIERS[storeKey]||[];
+  var specials=SPECIALS[storeKey]||[];
+  var s=DATA.stores[storeKey];
+  var colors=['tc-gold','tc-silver','tc-green','tc-blue','tc-dark','tc-bronze'];
+  var standardAmts=[10000,5000,3000,2000,1000];
+  var html='<div class="modal-title">'+storeKey+' 充值方案明细</div>';
+  html+='<div class="modal-sub">活动期间充值 '+s.recharge_count+' 笔，充值总额 ¥'+s.recharge_total.toLocaleString()+'</div>';
+  html+='<div class="tier-summary"><span>实储 <b>¥'+s.recharge_actual.toLocaleString()+'</b></span><span>赠储 <b>¥'+s.recharge_gift.toLocaleString()+'</b></span><span>赠送比例 <b>'+(s.recharge_gift/s.recharge_actual*100).toFixed(1)+'%</b></span></div>';
+  html+='<div class="tier-grid">';
+  var ci=0;
+  tiers.forEach(function(tier){
+    if(tier.special){
+      html+='<div class="tier-card tc-special">'
+        +'<div class="tc-top"><div class="tc-actual">¥'+tier.a+'</div>'
+        +'<div class="tc-label">赠 ¥'+tier.g.toLocaleString()+' (纯赠币)</div></div>'
+        +'<div class="tc-bottom"><div><div class="tc-gift">'+tier.n+'笔</div>'
+        +'<div class="tc-breakdown">本金 ¥'+tier.at+' + 赠币 ¥'+tier.gt+'</div>'
+        +'<div class="tc-total">= ¥'+tier.t.toLocaleString()+'</div></div>'
+        +'<div class="tc-count">后台</div></div></div>';
+      return;
+    }
+    var isStd=standardAmts.indexOf(tier.a)>=0;
+    var colorClass=isStd?colors[standardAmts.indexOf(tier.a)%colors.length]:colors[ci%colors.length];
+    if(!isStd) ci++;
+    var giftLabel=tier.g>0?'送 ¥'+tier.g.toLocaleString():'无赠送';
+    var principal=tier.at, bonus=tier.gt;
+    html+='<div class="tier-card '+colorClass+'">'
+      +'<div class="tc-top"><div class="tc-actual">¥'+tier.a.toLocaleString()+'</div>'
+      +'<div class="tc-label">'+giftLabel+'</div></div>'
+      +'<div class="tc-bottom"><div><div class="tc-gift">'+tier.n+'笔</div>'
+      +'<div class="tc-breakdown">本金 ¥'+principal.toLocaleString()+' + 赠币 ¥'+bonus.toLocaleString()+'</div>'
+      +'<div class="tc-total">= ¥'+tier.t.toLocaleString()+'</div>'
+      +(tier.g>0?'<div class="tc-ratio">赠送 '+tier.r+'%</div>':'')
+      +'</div>'
+      +'<div class="tc-count">'+(isStd?'标准档':'非标')+'</div></div></div>';
+  });
+  html+='</div>';
+  if(specials.length>0){
+    html+='<div class="special-section"><h4>特殊操作记录</h4>';
+    specials.forEach(function(sp){
+      var icon=sp.type==='补录'?'📝':'🎁';
+      html+='<div class="special-item"><div class="si-icon">'+icon+'</div><div class="si-info"><div class="si-name">'+sp.name+' · '+sp.type+'</div><div class="si-note">'+sp.date+' '+sp.note+'</div></div><div class="si-amt">¥'+sp.gift.toLocaleString()+'</div></div>';
+    });
+    html+='</div>';
+  }
+  document.getElementById('modalContent').innerHTML=html;
+  document.getElementById('tierModal').classList.add('open');
+}
+function closeModal(){document.getElementById('tierModal').classList.remove('open')}
+</script>
+
+<!-- Module 1: 经营洞察 -->
+<div class="section" id="cmpSection">
+<h2>6月经营全景洞察 <span style="font-size:12px;font-weight:400;color:#888">（1日-21日）</span></h2>
+<div id="insightContainer"></div>
+</div>
+
+<!-- Module 2: 会员充值排名 -->
+<div class="section">
+<h2>会员充值排名 TOP 30</h2>
+<div class="rank-wrap">
+<table class="rank-table">
+<thead><tr><th>排名</th><th style="text-align:left">会员</th><th>手机号</th><th>门店</th><th>充值笔数</th><th>实储(本金)</th><th>赠储</th><th>充值总额</th><th>日期</th></tr></thead>
+<tbody id="rankBody"></tbody>
+</table>
+</div>
+</div>
+
+<!-- Module 3: 非标充值明细 -->
+<div class="section">
+<h2>非标充值明细 <span style="font-size:12px;font-weight:400;color:#888">（共14笔，与标准档位不一致）</span></h2>
+<p style="font-size:12px;color:#888;margin-bottom:10px">标准档位: 充1000赠288 | 充2000赠788 | 充3000赠1188 | 充5000赠2288 | 充10000赠4888</p>
+<div style="overflow:visible;border-radius:8px;border:1px solid #e8e8e8">
+<table class="ns-table">
+<thead><tr><th>日期</th><th style="text-align:left">会员</th><th>手机号</th><th>门店</th><th>实储</th><th>赠储</th><th>赠储差</th><th style="text-align:left">说明</th><th>操作人</th></tr></thead>
+<tbody id="nsBody"></tbody>
+</table>
+</div>
+<div style="margin-top:10px;padding:10px 14px;background:#fff8e1;border-radius:6px;font-size:12px;color:#856404">
+<b>提示：</b>以上非标操作大多是门店手动调整，可能是给老客户的特殊优惠、凑整处理或拆分充值。建议门店在执行非标操作时在系统备注中说明原因，便于后续核对。
+</div>
+</div>
+
+<!-- Module 4: 各门店充值方案明细 (inline for screenshots) -->
+<div class="section">
+<h2>各门店充值方案明细</h2>
+<p style="font-size:12px;color:#888;margin-bottom:12px">每张卡片显示: 充值档位 → 本金(实储) + 赠币(赠储) = 合计</p>
+<div id="inlineTierContainer"></div>
+</div>
+
+<script>
+// Module 1: Insight
+(function(){
+  var pre={days:5,orders:861,orderAmt:272625.35,discount:10404.77,revenue:262220.58,rchCnt:8,rchAct:32030,rchGift:13116,rchTotal:45146};
+  var act={days:16,orders:3188,orderAmt:1193476.76,discount:79359.2,revenue:1114117.56,rchCnt:331,rchAct:726931.01,rchGift:293640,rchTotal:1020571.01};
+  var totalRev=pre.revenue+act.revenue;
+  var totalOrders=pre.orders+act.orders;
+  var totalRch=pre.rchTotal+act.rchTotal;
+  var totalDiscount=pre.discount+act.discount;
+  function fw(n){return n>=10000?'¥'+(n/10000).toFixed(1)+'万':'¥'+Math.round(n).toLocaleString()}
+  function pct(a,b){return(a/(a+b)*100).toFixed(1)}
+  function pctChg(a,b){return((a-b)/Math.abs(b)*100).toFixed(1)}
+  var h='';
+  // Hero: total revenue
+  h+='<div class="ins-hero"><div class="ins-total-label">6月1日-21日 营业总收入（21天）</div>';
+  h+='<div class="ins-total-val">¥'+(totalRev/10000).toFixed(1)+'万</div>';
+  h+='<div class="ins-total-sub">共 '+totalOrders.toLocaleString()+' 笔订单 | 日均 ¥'+Math.round(totalRev/21).toLocaleString()+'</div></div>';
+  // Grid: key metrics
+  h+='<div class="ins-grid">';
+  h+='<div class="ins-card ic-blue"><div class="ic-label">活动期营收占比</div><div class="ic-val">'+pct(act.revenue,pre.revenue)+'%</div><div class="ic-sub">16天贡献了绝大部分收入</div></div>';
+  h+='<div class="ins-card ic-green"><div class="ic-label">会员本金</div><div class="ic-val">¥'+((act.rchAct+pre.rchAct)/10000).toFixed(2)+'万</div><div class="ic-sub">赠币¥'+((act.rchGift+pre.rchGift)/10000).toFixed(2)+'万 / 合计¥'+(totalRch/10000).toFixed(2)+'万</div></div>';
+  h+='<div class="ins-card ic-orange"><div class="ic-label">优惠总支出</div><div class="ic-val">¥'+(totalDiscount/10000).toFixed(2)+'万</div><div class="ic-sub">占营业额'+(totalDiscount/(pre.orderAmt+act.orderAmt)*100).toFixed(2)+'%</div></div>';
+  h+='</div>';
+  // Proportion bars
+  h+='<div class="prop-section">';
+  var bars=[
+    {label:'营收',act:act.revenue,pre:pre.revenue,actLabel:'活动期 ¥'+(act.revenue/10000).toFixed(1)+'万',preLabel:'活动前 ¥'+(pre.revenue/10000).toFixed(1)+'万'},
+    {label:'订单',act:act.orders,pre:pre.orders,actLabel:act.orders+'笔',preLabel:pre.orders+'笔'},
+    {label:'充值本金',act:act.rchAct,pre:pre.rchAct,actLabel:'¥'+(act.rchAct/10000).toFixed(2)+'万',preLabel:'¥'+(pre.rchAct/10000).toFixed(2)+'万'},
+    {label:'优惠金额',act:act.discount,pre:pre.discount,actLabel:'¥'+(act.discount/10000).toFixed(2)+'万',preLabel:'¥'+(pre.discount/10000).toFixed(2)+'万'}
+  ];
+  bars.forEach(function(b){
+    var ap=pct(b.act,b.pre), pp=pct(b.pre,b.act);
+    h+='<div class="prop-item"><div class="prop-head"><span class="prop-label">'+b.label+'</span>';
+    h+='<span class="prop-vals">活动期 '+ap+'% | 活动前 '+pp+'%</span></div>';
+    h+='<div class="prop-bar"><div class="pb-act" style="width:'+ap+'%">'+b.actLabel+'</div>';
+    h+='<div class="pb-pre" style="width:'+pp+'%">'+b.preLabel+'</div></div></div>';
+  });
+  h+='</div>';
+  // Store contribution
+  var stores=[
+    {name:'省府店',rev:586099.19,ord:1467,rch:368909,gift:148900},
+    {name:'市府店',rev:463196.14,ord:1334,rch:228052,gift:96316},
+    {name:'农大店',rev:151117.89,ord:644,rch:83000,gift:32644},
+    {name:'含浦店',rev:175924.92,ord:604,rch:79000,gift:30296}
+  ];
+  var totalStoreRev=stores[0].rev+stores[1].rev+stores[2].rev+stores[3].rev;
+  var barColors=['sb-s1','sb-s2','sb-s3','sb-s4'];
+  h+='<div class="store-section"><h3>四店贡献</h3>';
+  h+='<div class="store-grid">';
+  stores.forEach(function(s){
+    var pctRev=(s.rev/totalStoreRev*100).toFixed(1);
+    h+='<div class="store-card"><span class="sc-pct">'+pctRev+'%</span>';
+    h+='<div class="sc-name">'+s.name+'</div>';
+    h+='<div class="sc-rev">¥'+(s.rev/10000).toFixed(1)+'万</div>';
+    h+='<div class="sc-ord">'+s.ord+'笔订单</div>';
+    h+='<div class="sc-rch">充值 ¥'+(s.rch/10000).toFixed(1)+'万</div>';
+    h+='</div>';
+  });
+  h+='</div>';
+  h+='<div style="font-size:11px;color:#888;margin-bottom:4px">营收占比</div>';
+  h+='<div class="store-bar">';
+  stores.forEach(function(s,i){
+    var w=s.rev/totalStoreRev*100;
+    h+='<div class="'+barColors[i]+'" style="width:'+w+'%">'+s.name+' '+w.toFixed(0)+'%</div>';
+  });
+  h+='</div>';
+  // Recharge bar
+  var totalStoreRch=stores.reduce(function(sum,s){return sum+s.rch},0);
+  h+='<div style="font-size:11px;color:#888;margin:8px 0 4px">充值本金占比</div>';
+  h+='<div class="store-bar">';
+  stores.forEach(function(s,i){
+    var w=s.rch/totalStoreRch*100;
+    h+='<div class="'+barColors[i]+'" style="width:'+w+'%">'+s.name+' '+w.toFixed(0)+'%</div>';
+  });
+  h+='</div>';
+  h+='</div>';
+  document.getElementById('insightContainer').innerHTML=h;
+})();
+</script>
+
+<script>
+// Module 2: Ranking data
+var RANK = [{"name":"蔡女士","phone":"182****1607","store":"市府店","actual":10000,"gift":6288,"total":16288,"count":2,"dates":"06/09-06/18"},{"name":"覃总","phone":"137****2588","store":"市府店","actual":10000,"gift":4888,"total":14888,"count":1,"dates":"06/13"},{"name":"蔡美女","phone":"137****6131","store":"市府店","actual":10000,"gift":4888,"total":14888,"count":1,"dates":"06/09"},{"name":"李总","phone":"189****7666","store":"市府店","actual":10000,"gift":4888,"total":14888,"count":1,"dates":"06/13"},{"name":"柯总","phone":"139****5447","store":"市府店","actual":10000,"gift":4888,"total":14888,"count":1,"dates":"06/13"},{"name":"肖美女","phone":"135****0088","store":"市府店","actual":10000,"gift":4888,"total":14888,"count":1,"dates":"06/12"},{"name":"戴磊","phone":"186****6999","store":"省府店","actual":10000,"gift":4888,"total":14888,"count":1,"dates":"06/21"},{"name":"龙美女","phone":"188****8666","store":"省府店","actual":10000,"gift":4888,"total":14888,"count":1,"dates":"06/19"},{"name":"徐姐","phone":"158****3853","store":"省府店","actual":10000,"gift":4888,"total":14888,"count":1,"dates":"06/08"},{"name":"郭庆丰","phone":"188****8612","store":"省府店","actual":8700,"gift":4888,"total":13588,"count":3,"dates":"06/17"},{"name":"刘刚","phone":"139****1818","store":"省府店","actual":8000,"gift":3476,"total":11476,"count":2,"dates":"06/09-06/15"},{"name":"王","phone":"139****5188","store":"省府店","actual":10000,"gift":1188,"total":11188,"count":2,"dates":"06/19"},{"name":"杨总","phone":"186****1988","store":"省府店","actual":7000,"gift":3076,"total":10076,"count":1,"dates":"06/11"},{"name":"张总","phone":"139****0908","store":"市府店","actual":7000,"gift":2864,"total":9864,"count":2,"dates":"06/11-06/19"},{"name":"谢总","phone":"186****0099","store":"省府店","actual":6000,"gift":2652,"total":8652,"count":1,"dates":"06/06"},{"name":"周女士","phone":"186****2580","store":"农大店","actual":5000,"gift":2288,"total":7288,"count":1,"dates":"06/13"},{"name":"陈总","phone":"135****2667","store":"省府店","actual":5000,"gift":2288,"total":7288,"count":1,"dates":"06/17"},{"name":"唐总","phone":"152****0988","store":"农大店","actual":5000,"gift":2288,"total":7288,"count":1,"dates":"06/17"},{"name":"刘红霞","phone":"138****8667","store":"省府店","actual":5000,"gift":2288,"total":7288,"count":1,"dates":"06/06"},{"name":"谭总","phone":"186****6678","store":"市府店","actual":5000,"gift":2288,"total":7288,"count":1,"dates":"06/12"},{"name":"周总","phone":"136****3266","store":"含浦店","actual":4000,"gift":1576,"total":5576,"count":2,"dates":"06/07-06/08"},{"name":"贺总","phone":"153****5999","store":"市府店","actual":4000,"gift":1576,"total":5576,"count":1,"dates":"06/19"},{"name":"彭总","phone":"185****9588","store":"含浦店","actual":4000,"gift":1576,"total":5576,"count":1,"dates":"06/19"},{"name":"吴总","phone":"155****8588","store":"省府店","actual":4000,"gift":1576,"total":5576,"count":1,"dates":"06/06"},{"name":"胡总","phone":"189****0688","store":"市府店","actual":4000,"gift":1576,"total":5576,"count":1,"dates":"06/08"},{"name":"黄总","phone":"138****5868","store":"农大店","actual":4000,"gift":1576,"total":5576,"count":1,"dates":"06/17"},{"name":"童总","phone":"186****5050","store":"省府店","actual":5000,"gift":288,"total":5288,"count":2,"dates":"06/14"},{"name":"罗军","phone":"186****0898","store":"省府店","actual":4000,"gift":1176,"total":5176,"count":2,"dates":"06/11-06/18"},{"name":"田总","phone":"186****7688","store":"含浦店","actual":3000,"gift":1188,"total":4188,"count":1,"dates":"06/06"},{"name":"肖高","phone":"151****0966","store":"市府店","actual":3000,"gift":1188,"total":4188,"count":1,"dates":"06/06"}];
+(function(){
+  var tb=document.getElementById('rankBody');
+  var h='';
+  RANK.forEach(function(r,i){
+    var rkClass=i===0?'rk rk1':i===1?'rk rk2':i===2?'rk rk3':'rk';
+    h+='<tr><td class="'+rkClass+'">'+(i+1)+'</td><td class="rname">'+r.name+'</td><td>'+r.phone+'</td><td>'+r.store+'</td><td>'+r.count+'</td><td class="ramt">¥'+r.actual.toLocaleString()+'</td><td class="ramt">¥'+r.gift.toLocaleString()+'</td><td class="ramt" style="color:#27ae60">¥'+r.total.toLocaleString()+'</td><td style="font-size:11px;color:#888">'+r.dates+'</td></tr>';
+  });
+  tb.innerHTML=h;
+})();
+</script>
+
+<script>
+// Module 3: Non-standard recharge records
+var NONSTD = [
+{"date":"06/09","name":"覃总","phone":"132****4004","store":"含浦店","actual":0.01,"gift":500,"diff":212,"note":"后台赠币操作，0.01实储过系统","op":"小吴","warn":true},
+{"date":"06/08","name":"李锋","phone":"133****2288","store":"市府店","actual":1022,"gift":288,"diff":0,"note":"多充22元，按1000档赠送","op":"位莉莉","warn":false},
+{"date":"06/09","name":"李总","phone":"135****8191","store":"市府店","actual":1000,"gift":88,"diff":-200,"note":"充1000但只赠88，少赠200","op":"位莉莉","warn":true},
+{"date":"06/09","name":"陆汉中","phone":"138****3437","store":"市府店","actual":1135,"gift":288,"diff":0,"note":"多充135元，仍按1000档赠送","op":"位莉莉","warn":false},
+{"date":"06/13","name":"黄美女","phone":"132****1308","store":"市府店","actual":3000,"gift":1300,"diff":112,"note":"3000档标准赠1188，多赠112","op":"位莉莉","warn":true},
+{"date":"06/16","name":"陆汉中","phone":"138****3437","store":"市府店","actual":895,"gift":0,"diff":-288,"note":"差105到1000档，未触发赠送","op":"郭炎嘉市府","warn":true},
+{"date":"06/11","name":"任女士","phone":"185****5090","store":"省府店","actual":622,"gift":0,"diff":-288,"note":"小额充值，未达最低档位","op":"任乐仪","warn":false},
+{"date":"06/12","name":"林女士","phone":"199****5599","store":"省府店","actual":400,"gift":0,"diff":-288,"note":"小额充值，未达最低档位","op":"周荔","warn":false},
+{"date":"06/12","name":"林女士","phone":"199****5599","store":"省府店","actual":1680,"gift":788,"diff":0,"note":"与上笔合计2080，按2000档赠送788","op":"周荔","warn":false},
+{"date":"06/14","name":"林","phone":"130****2870","store":"省府店","actual":5000,"gift":2600,"diff":312,"note":"5000档标准赠2288，多赠312","op":"任乐仪","warn":true},
+{"date":"06/16","name":"陈总","phone":"137****6161","store":"省府店","actual":499,"gift":0,"diff":-288,"note":"差501到1000档，未触发赠送","op":"任乐仪","warn":false},
+{"date":"06/17","name":"郭庆丰","phone":"188****8612","store":"省府店","actual":8700,"gift":4888,"diff":0,"note":"少充1300但按10000档赠送，与下笔拆分","op":"任乐仪","warn":false},
+{"date":"06/17","name":"郭庆丰","phone":"188****8612","store":"省府店","actual":8700,"gift":1188,"diff":-3700,"note":"同日两笔合计17400，赠送拆分","op":"任乐仪","warn":true},
+{"date":"06/17","name":"王女士","phone":"186****7184","store":"省府店","actual":978,"gift":0,"diff":-288,"note":"差22到1000档，未触发赠送","op":"任乐仪","warn":false}
+];
+(function(){
+  var tb=document.getElementById('nsBody');
+  var h='';
+  NONSTD.forEach(function(r){
+    var diffHtml='';
+    if(r.diff>0) diffHtml='<span class="ns-up">+'+r.diff+'</span>';
+    else if(r.diff<0) diffHtml='<span class="ns-down">'+r.diff+'</span>';
+    else diffHtml='<span class="ns-eq">-</span>';
+    var warnClass=r.warn?' ns-warn':'';
+    h+='<tr class="'+warnClass+'"><td>'+r.date+'</td><td class="ns-name">'+r.name+'</td><td>'+r.phone+'</td><td><span class="ns-store-tag">'+r.store+'</span></td><td class="ramt">¥'+r.actual.toLocaleString()+'</td><td class="ramt">¥'+r.gift.toLocaleString()+'</td><td>'+diffHtml+'</td><td class="ns-note">'+r.note+'</td><td style="font-size:11px;color:#888">'+r.op+'</td></tr>';
+  });
+  tb.innerHTML=h;
+})();
+</script>
+
+<script>
+// Module 4: Inline tier cards per store
+(function(){
+  var container=document.getElementById('inlineTierContainer');
+  var colors=['tc-gold','tc-silver','tc-green','tc-blue','tc-dark','tc-bronze'];
+  var standardAmts=[10000,5000,3000,2000,1000];
+  var storeKeys=['省府店','市府店','农大店','含浦店'];
+  var html='';
+  storeKeys.forEach(function(sk){
+    var tiers=TIERS[sk]||[];
+    var s=DATA.stores[sk];
+    html+='<div class="store-tier-block"><h3>'+sk+' <span style="font-weight:400;font-size:12px;color:#888">充值'+s.recharge_count+'笔 | 实储¥'+s.recharge_actual.toLocaleString()+' + 赠储¥'+s.recharge_gift.toLocaleString()+' = ¥'+s.recharge_total.toLocaleString()+'</span></h3>';
+    html+='<div class="tier-grid">';
+    var ci=0;
+    tiers.forEach(function(tier){
+      if(tier.special){
+        html+='<div class="tier-card tc-special"><div class="tc-top"><div class="tc-actual">¥'+tier.a+'</div><div class="tc-label">赠 ¥'+tier.g.toLocaleString()+' (纯赠币)</div></div><div class="tc-bottom"><div><div class="tc-gift">'+tier.n+'笔</div><div class="tc-breakdown">本金 ¥'+tier.at+' + 赠币 ¥'+tier.gt+'</div><div class="tc-total">= ¥'+tier.t.toLocaleString()+'</div></div><div class="tc-count">后台</div></div></div>';
+        return;
+      }
+      var isStd=standardAmts.indexOf(tier.a)>=0;
+      var colorClass=isStd?colors[standardAmts.indexOf(tier.a)%colors.length]:colors[ci%colors.length];
+      if(!isStd) ci++;
+      var giftLabel=tier.g>0?'送 ¥'+tier.g.toLocaleString():'无赠送';
+      html+='<div class="tier-card '+colorClass+'"><div class="tc-top"><div class="tc-actual">¥'+tier.a.toLocaleString()+'</div><div class="tc-label">'+giftLabel+'</div></div><div class="tc-bottom"><div><div class="tc-gift">'+tier.n+'笔</div><div class="tc-breakdown">本金 ¥'+tier.at.toLocaleString()+' + 赠币 ¥'+tier.gt.toLocaleString()+'</div><div class="tc-total">= ¥'+tier.t.toLocaleString()+'</div>'+(tier.g>0?'<div class="tc-ratio">赠送 '+tier.r+'%</div>':'')+'</div><div class="tc-count">'+(isStd?'标准档':'非标')+'</div></div></div>';
+    });
+    html+='</div></div>';
+  });
+  container.innerHTML=html;
+})();
+</script>
+
+<div class="modal-overlay" id="tierModal" onclick="if(event.target===this)closeModal()">
+<div class="modal-box">
+<div class="modal-close" onclick="closeModal()">&times;</div>
+<div id="modalContent"></div>
+</div>
+</div>
+</body>
+</html>
